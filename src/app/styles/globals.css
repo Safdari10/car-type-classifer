@@ -1,0 +1,13 @@
+@tailwind base;
+
+@layer base {
+    *,*::before, *::before {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+}
+}
+
+@tailwind components;
+
+@tailwind utilities;
