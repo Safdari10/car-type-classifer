@@ -39,8 +39,9 @@ const Upload = () => {
         </div>
       )}
       <button
-        onClick={handleSubmit}
-        className="bg-blue-500 text-white p-2 rounded">
+        onClick={handleSubmit} 
+        className="text-2xl bg-blue-700"
+        >
         Upload Image
       </button>
     </div>

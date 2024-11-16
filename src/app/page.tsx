@@ -1,3 +1,5 @@
+'use client'
+
 import Upload from "./components/Upload"
 
 
