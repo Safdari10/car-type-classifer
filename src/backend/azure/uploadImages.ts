@@ -1,42 +1,39 @@
-import { CustomVisionTrainingClient } from "@azure/cognitiveservices-customvision-training";
+import { TrainingAPIClient } from "@azure/cognitiveservices-customvision-training";
 import { ApiKeyCredentials } from "@azure/ms-rest-js";
 import fs from "fs";
 import path from "path";
 
-// Getu Azure Custom Vision credentials from .env file
+// Get Azure Custom Vision credentials from .env file
 const trainingKey = process.env.CUSTOM_VISION_TRAINING_KEY;
 const endpoint = process.env.CUSTOM_VISION_ENDPOINT;
 
 if (!trainingKey || !endpoint) {
-  throw new Error(
-    "Please set your Custom Vision API key and end point in your .env file"
-  );
+  throw new Error("Please set your Custom Vision API key and endpoint in your .env file");
 }
 
-//Initialise the Custom Vision training Client
-const credentials = new ApiKeyCredentials({
-  inHeader: { "Training-key": trainingKey },
-});
-const client = new CustomVisionTrainingClient(credentials, endpoint);
+// Initialize the Custom Vision Training Client
+const credentials = new ApiKeyCredentials({ inHeader: { "Training-key": trainingKey } });
+const trainer = new TrainingAPIClient(credentials, endpoint);
 
 // Function to upload an image to the Azure Custom Vision
-export default  async function uploadImage(
+export default async function uploadImage(
   imagePath: string,
   projectId: string,
   tag: string
 ) {
   try {
-    const stream = fs.createReadStream(imagePath);
     const imageName = path.basename(imagePath);
+    const imageData = fs.readFileSync(imagePath);  // Synchronously read image data
 
-    //upload the iamge to the project
-    const image = await client.createImageFromData(projectId, stream, {
+    // Upload the image to the project with a tag
+    const image = await trainer.createImagesFromData(projectId, imageData, {
       tagIds: [tag],
     });
+
     console.log(`Uploaded ${imageName} to Custom Vision with tag: ${tag}`);
     return image;
   } catch (error) {
-    console.error("Errror uploading image:", error);
+    console.error("Error uploading image:", error);
     throw error;
   }
-};
+}
