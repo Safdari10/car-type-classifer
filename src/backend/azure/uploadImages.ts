@@ -7,7 +7,7 @@ import path from "path";
 const trainingKey = process.env.CUSTOM_VISION_TRAINING_KEY;
 const endpoint = process.env.CUSTOM_VISION_ENDPOINT;
 
-if (!trainingKey || endpoint) {
+if (!trainingKey || !endpoint) {
   throw new Error(
     "Please set your Custom Vision API key and end point in your .env file"
   );
@@ -20,11 +20,11 @@ const credentials = new ApiKeyCredentials({
 const client = new CustomVisionTrainingClient(credentials, endpoint);
 
 // Function to upload an image to the Azure Custom Vision
-export default uploadImage = async (
+export default  async function uploadImage(
   imagePath: string,
   projectId: string,
   tag: string
-) => {
+) {
   try {
     const stream = fs.createReadStream(imagePath);
     const imageName = path.basename(imagePath);
