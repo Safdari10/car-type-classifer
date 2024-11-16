@@ -6,8 +6,9 @@ import path from "path";
 // Get Azure Custom Vision credentials from .env file
 const trainingKey = process.env.CUSTOM_VISION_TRAINING_KEY;
 const endpoint = process.env.CUSTOM_VISION_ENDPOINT;
+const projectId = process.env.CUSTOM_VISION_PROJECT_ID
 
-if (!trainingKey || !endpoint) {
+if (!trainingKey || !endpoint || !projectId) {
   throw new Error("Please set your Custom Vision API key and endpoint in your .env file");
 }
 
