@@ -10,3 +10,7 @@ const endpoint = process.env.CUSTOM_VISION_ENDPOINT;
 if(!trainingKey || endpoint) {
     throw new Error("Please set your Custom Vision API key and end point in your .env file")
 }
+
+//Initialise the Custom Vision training Client 
+const credentials = new ApiKeyCredentials({inHeader: {"Training-key": trainingKey}})
+const client = new CustomVisionTrainingClient(credentials, endpoint);
