@@ -14,4 +14,3 @@ if (!trainingKey || !endpoint || !projectId) {
 // Create Azure custom Vision client
 const credentials = new ApiKeyCredentials({inHeader: {"TrainingKey": trainingKey}})
 export const trainer = new TrainingAPIClient(credentials, endpoint)
-export const projectIdVar = projectId;
