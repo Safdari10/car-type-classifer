@@ -2,12 +2,16 @@
   "name": "turner-insurance-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
-
+    "lint": "next lint",
+    "tag": "ts-node createTags.ts",
+    "upload": "ts-node uploadImage.ts"
+     
   },
   "dependencies": {
     "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
