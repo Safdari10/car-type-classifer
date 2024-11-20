@@ -6,8 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "ts": "npx ts-node"
+    "lint": "next lint"
+
   },
   "dependencies": {
     "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
@@ -16,8 +16,8 @@
     "dotenv": "^16.4.5",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
-    "ts-node": "^10.9.2"
+    "react-dom": "19.0.0-rc-66855b96-20241106"
+
   },
   "devDependencies": {
     "@types/node": "^20",
