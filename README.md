@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Turner Insurance App
+
+This project is a car insurance web application built with [Next.js](https://nextjs.org/) and TypeScript. It allows users to upload images of their cars, which are then processed using Azure Custom Vision to classify car types and assist with insurance processes.
+
+## Features
+
+- Modern UI for uploading car images
+- Integration with Azure Custom Vision for car type classification
+- Backend scripts for training models, creating tags, and uploading images
+- Tailwind CSS for styling
+
+## Project Structure
+
+- `src/app/` – Next.js frontend (UI, pages, components)
+- `src/backend/` – Node.js backend scripts for Azure Custom Vision
+- `public/` – Static assets
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```
+CUSTOM_VISION_TRAINING_KEY=your_training_key
+CUSTOM_VISION_ENDPOINT=your_endpoint_url
+CUSTOM_VISION_PROJECT_ID=your_project_id
+```
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Backend Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The backend scripts in `src/backend/` are used for managing Azure Custom Vision:
 
-## Learn More
+- `createTags.ts` – Creates tags for car types in your Custom Vision project.
+- `uploadImage.ts` – Uploads images from local folders to Azure Custom Vision, associating them with tags.
+- `trainmodel.ts` – (To be implemented) Script for training the model.
 
-To learn more about Next.js, take a look at the following resources:
+Run backend scripts with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run tag      # Runs createTags.ts
+npm run upload   # Runs uploadImage.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technologies Used
 
-## Deploy on Vercel
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Azure Custom Vision SDK
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Folder Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/components/Upload.tsx` – Main upload component for car images
+- `src/backend/` – Azure Custom Vision integration scripts
+- `src/app/styles/global.css` – Global styles using Tailwind CSS
+
+## License
+
+This project is for educational and demonstration purposes.
