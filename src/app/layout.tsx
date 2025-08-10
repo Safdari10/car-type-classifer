@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import './styles/global.css';
+import "./styles/global.css";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
-        <title>Turners Car Insurance App</title>
+        <title>Car Type Classifier</title>
       </head>
       <body>
         <main>{children}</main>
