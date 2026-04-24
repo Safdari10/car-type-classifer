@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { trainer, projectId } from "./config";
+import { listTags, uploadImageData } from "./customVision";
 
 /**
  * Uploads all images from the specified directory to Azure Custom Vision with multiple tag IDs.
@@ -16,7 +16,7 @@ async function uploadImagesWithTags(dirPath: string, tagIds: string[]) {
     const imageData = fs.readFileSync(filePath); // Read image as buffer
 
     console.log(`Uploading image: ${filePath} with tags: ${tagIds}`);
-    return trainer.createImagesFromData(projectId!, imageData, { tagIds });
+    return uploadImageData(imageData, tagIds);
   });
 
   // Wait for all uploads to complete
@@ -31,21 +31,33 @@ async function uploadImagesWithTags(dirPath: string, tagIds: string[]) {
 export async function uploadBatchImagesWithMultipleTags() {
   try {
     const baseDir = "src/images";
+    const tags = await listTags();
+    const tagIdByName = new Map(tags.map((tag) => [tag.name, tag.id]));
 
     const directoriesAndTags = [
-      { dir: `${baseDir}/Convertible`, tagIds: ["Convertible"] },
-      { dir: `${baseDir}/Coupe`, tagIds: ["Coupe"] },
-      { dir: `${baseDir}/Hatchback`, tagIds: ["Hatchback"] },
-      { dir: `${baseDir}/Minivan`, tagIds: ["Minivan"] },
-      { dir: `${baseDir}/Pickup`, tagIds: ["Pickup"] },
-      { dir: `${baseDir}/Sedan`, tagIds: ["Sedan"] },
-      { dir: `${baseDir}/SUV`, tagIds: ["SUV"] },
-      { dir: `${baseDir}/Station Wagon`, tagIds: ["Station Wagon"] },
-      { dir: `${baseDir}/Truck`, tagIds: ["Truck"] },
-      { dir: `${baseDir}/Van`, tagIds: ["Van"] },
+      { dir: `${baseDir}/Convertible`, tagNames: ["Convertible"] },
+      { dir: `${baseDir}/Coupe`, tagNames: ["Coupe"] },
+      { dir: `${baseDir}/Hatchback`, tagNames: ["Hatchback"] },
+      { dir: `${baseDir}/Minivan`, tagNames: ["Minivan"] },
+      { dir: `${baseDir}/Pickup`, tagNames: ["Pickup"] },
+      { dir: `${baseDir}/Sedan`, tagNames: ["Sedan"] },
+      { dir: `${baseDir}/SUV`, tagNames: ["SUV"] },
+      { dir: `${baseDir}/Station Wagon`, tagNames: ["Station Wagon"] },
+      { dir: `${baseDir}/Truck`, tagNames: ["Truck"] },
+      { dir: `${baseDir}/Van`, tagNames: ["Van"] },
     ];
 
-    for (const { dir, tagIds } of directoriesAndTags) {
+    for (const { dir, tagNames } of directoriesAndTags) {
+      const tagIds = tagNames.map((tagName) => {
+        const tagId = tagIdByName.get(tagName);
+
+        if (!tagId) {
+          throw new Error(`Custom Vision tag not found: ${tagName}`);
+        }
+
+        return tagId;
+      });
+
       await uploadImagesWithTags(dir, tagIds);
     }
     console.log("All directories processed successfully");
