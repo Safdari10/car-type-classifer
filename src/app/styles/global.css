@@ -1,5 +1,4 @@
-@tailwind base;
-
+@import "tailwindcss";
 
 @layer base {
   *,
@@ -21,6 +20,3 @@
     min-height: 100vh;
   }
 }
-
-@tailwind components;
-@tailwind utilities;
