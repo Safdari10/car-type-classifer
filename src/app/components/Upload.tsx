@@ -1,13 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 
 const Upload = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedImage(e.target.files[0]);
+      const image = e.target.files[0];
+
+      setSelectedImage(image);
+      setPreviewUrl(URL.createObjectURL(image));
     }
   };
 
@@ -29,23 +43,26 @@ const Upload = () => {
       </h1>
 
       {/* Upload Area */}
-      <div className="relative bg-gray-100 w-[30rem] h-[20rem] rounded-lg border-dashed border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition">
+      <div className="relative bg-gray-100 w-120 h-80 rounded-lg border-dashed border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition">
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           className="absolute w-full h-full opacity-0 cursor-pointer"
         />
-        {!selectedImage ? (
+        {!previewUrl ? (
           <p className="text-gray-600 text-center">
-            Drag & Drop or <span className="text-blue-600 underline">Click to Upload</span>
+            Drag & Drop or{" "}
+            <span className="text-blue-600 underline">Click to Upload</span>
           </p>
         ) : (
           <div className="absolute inset-0 flex  items-center justify-center bg-gray-50 bg-opacity-80  ">
-            <img
-              src={URL.createObjectURL(selectedImage)}
+            <Image
+              src={previewUrl}
               alt="Preview"
-              className="w-full h-full object-cover rounded-lg"
+              fill
+              unoptimized
+              className="rounded-lg object-cover"
             />
           </div>
         )}
