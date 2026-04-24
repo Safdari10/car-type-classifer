@@ -1,4 +1,4 @@
-import { trainer, projectIdVar } from "./config";
+import { createTag } from "./customVision";
 
 /**
  * Creates tags in Azure Custom Vision and returns their IDs.
@@ -9,8 +9,8 @@ export async function createTags(tagNames: string[]): Promise<{ [key: string]: s
   const tagMap: { [key: string]: string } = {};
 
   for (const tagName of tagNames) {
-    const tag = await trainer.createTag(projectIdVar, tagName);
-    tagMap[tagName] = tag.id!;
+    const tag = await createTag(tagName);
+    tagMap[tagName] = tag.id;
     console.log(`Created tag: ${tagName} with ID: ${tag.id}`);
   }
 
