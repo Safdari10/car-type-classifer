@@ -1,13 +1,14 @@
-"use client";
-
 import "./styles/global.css";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+export const metadata: Metadata = {
+  title: "Car Type Classifier",
+};
+
+const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <html lang="en">
-      <head>
-        <title>Car Type Classifier</title>
-      </head>
       <body>
         <main>{children}</main>
       </body>
@@ -15,4 +16,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default RootLayout;
