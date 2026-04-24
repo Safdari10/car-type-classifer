@@ -12,6 +12,11 @@ const formatFileSize = (bytes: number) => {
 const Upload = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [predictions, setPredictions] = useState<
+    Array<{ tagId: string; tagName: string; probability: number }>
+  >([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -27,18 +32,56 @@ const Upload = () => {
 
       setSelectedImage(image);
       setPreviewUrl(URL.createObjectURL(image));
+      setError(null);
+      setPredictions([]);
     }
   };
 
   const clearImage = () => {
     setSelectedImage(null);
     setPreviewUrl(null);
+    setError(null);
+    setPredictions([]);
   };
 
-  const handleSubmit = () => {
-    if (selectedImage) {
-      console.log("Image selected:", selectedImage);
-      // TODO: Handle API call here in the future.
+  const handleSubmit = async () => {
+    if (!selectedImage) {
+      return;
+    }
+
+    setIsUploading(true);
+    setError(null);
+    setPredictions([]);
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
+    try {
+      const response = await fetch("/api/classify", {
+        method: "POST",
+        body: formData,
+      });
+      const result = (await response.json()) as {
+        error?: {
+          code: string;
+          message: string;
+        };
+        predictions?: Array<{ tagId: string; tagName: string; probability: number }>;
+      };
+
+      if (!response.ok) {
+        throw new Error(result.error?.message ?? "Image classification failed.");
+      }
+
+      setPredictions(result.predictions ?? []);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Image classification failed."
+      );
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -104,13 +147,48 @@ const Upload = () => {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="rounded-md border border-slate-200 bg-white p-3">
                   <p className="font-semibold text-slate-950">Status</p>
-                  <p className="mt-1 text-slate-500">Ready</p>
+                  <p className="mt-1 text-slate-500">
+                    {isUploading ? "Classifying" : "Ready"}
+                  </p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-white p-3">
                   <p className="font-semibold text-slate-950">Source</p>
                   <p className="mt-1 text-slate-500">Local upload</p>
                 </div>
               </div>
+
+              {error && (
+                <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                  <p className="text-sm font-semibold text-red-900">Setup error</p>
+                  <p className="mt-1 text-sm leading-6 text-red-800">{error}</p>
+                </div>
+              )}
+
+              {predictions.length > 0 && (
+                <div className="rounded-md border border-slate-200 bg-white p-3">
+                  <p className="text-sm font-semibold text-slate-950">Top predictions</p>
+                  <div className="mt-3 space-y-3">
+                    {predictions.map((prediction) => (
+                      <div key={prediction.tagId}>
+                        <div className="flex items-center justify-between gap-3 text-sm">
+                          <span className="font-medium text-slate-700">
+                            {prediction.tagName}
+                          </span>
+                          <span className="text-slate-500">
+                            {(prediction.probability * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="h-full rounded-full bg-red-700"
+                            style={{ width: `${prediction.probability * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="mt-5 rounded-md border border-dashed border-slate-300 bg-white p-4">
@@ -129,10 +207,10 @@ const Upload = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!selectedImage}
+            disabled={!selectedImage || isUploading}
             className="min-h-11 flex-1 rounded-md bg-red-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
           >
-            Upload
+            {isUploading ? "Classifying..." : "Upload"}
           </button>
           <button
             type="button"
