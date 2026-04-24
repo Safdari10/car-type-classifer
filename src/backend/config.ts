@@ -1,17 +1,15 @@
-import { ApiKeyCredentials } from "@azure/ms-rest-js";
-import { TrainingAPIClient } from "@azure/cognitiveservices-customvision-training";
+import "dotenv/config";
 
-// Azure credentials from environment variables
+const trainingKeyEnv = process.env.CUSTOM_VISION_TRAINING_KEY;
+const endpointEnv = process.env.CUSTOM_VISION_ENDPOINT;
+const projectIdEnv = process.env.CUSTOM_VISION_PROJECT_ID;
 
-export const trainingKey = process.env.CUSTOM_VISION_TRAINING_KEY
-export const endpoint = process.env.CUSTOM_VISION_ENDPOINT
-export const projectId = process.env.CUSTOM_VISION_PROJECT_ID;
-
-if (!trainingKey || !endpoint || !projectId) {
-    throw new Error(`Couldnt find training key, or endpoint, or projectId'`)
+if (!trainingKeyEnv || !endpointEnv || !projectIdEnv) {
+  throw new Error(
+    "Missing CUSTOM_VISION_TRAINING_KEY, CUSTOM_VISION_ENDPOINT, or CUSTOM_VISION_PROJECT_ID"
+  );
 }
 
-// Create Azure custom Vision client
-const credentials = new ApiKeyCredentials({inHeader: {"TrainingKey": trainingKey}})
-export const trainer = new TrainingAPIClient(credentials, endpoint)
-export const projectIdVar = projectId;
+export const trainingKey = trainingKeyEnv;
+export const projectId = projectIdEnv;
+export const customVisionEndpoint = endpointEnv.replace(/\/+$/, "");
